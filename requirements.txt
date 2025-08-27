@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+elasticsearch>=8.13.0
+sentence-transformers
+pymupdf
+nltk
+tqdm
+streamlit
+requests
