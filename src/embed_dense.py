@@ -1,5 +1,4 @@
-import os, json
-import requests
+import os, json, requests
 from requests.auth import HTTPBasicAuth
 from sentence_transformers import SentenceTransformer
 
@@ -21,9 +20,20 @@ def get_model():
     return _model
 
 def scan(batch_size=256):
-    """Stream all docs, only _id + content."""
+    """
+    Stream ONLY docs that do NOT yet have dense_vec.
+    """
     url = f"{ES_URL}/{INDEX}/_search"
-    body = {"size": batch_size, "sort": [{"_doc": "asc"}], "_source": ["content"]}
+    body = {
+        "size": batch_size,
+        "sort": [{"_doc": "asc"}],
+        "_source": ["content"],
+        "query": {
+            "bool": {
+                "must_not": {"exists": {"field": "dense_vec"}}
+            }
+        }
+    }
     search_after = None
     while True:
         if search_after:
@@ -37,8 +47,11 @@ def scan(batch_size=256):
         search_after = hits[-1]["sort"]
 
 def bulk_update(pairs):
-    """pairs: list[(_id, vector:list[float])]"""
-    if not pairs: return
+    """
+    pairs: list of tuples (_id, vector:list[float])
+    """
+    if not pairs:
+        return
     lines = []
     for _id, vec in pairs:
         lines.append(json.dumps({"update": {"_index": INDEX, "_id": _id}}))
@@ -48,28 +61,36 @@ def bulk_update(pairs):
                       headers=headers_ndjson, data=ndjson.encode("utf-8"))
     if r.status_code != 200:
         print("Bulk HTTP error:", r.status_code, r.text)
+        return
+    resp = r.json()
+    if resp.get("errors"):
+        for it in resp.get("items", []):
+            err = it.get("update", {}).get("error")
+            if err:
+                print("Bulk error (first):", json.dumps(err, indent=2))
+                break
     else:
-        resp = r.json()
-        if resp.get("errors"):
-            for it in resp.get("items", []):
-                err = it.get("update", {}).get("error")
-                if err:
-                    print("Bulk error (first):", json.dumps(err, indent=2))
-                    break
-        else:
-            print(f"Updated {len(pairs)} docs")
+        print(f"Updated {len(pairs)} docs")
 
 def main():
     total = 0
     model = get_model()
     for hits in scan():
-        texts = [h["_source"].get("content", "") for h in hits]
-        ids   = [h["_id"] for h in hits]
+        texts = []
+        ids   = []
+        for h in hits:
+            t = (h["_source"] or {}).get("content") or ""
+            if t and t.strip():
+                texts.append(t)
+                ids.append(h["_id"])
+        if not ids:
+            continue
         vecs = model.encode(texts, normalize_embeddings=True).tolist()
         bulk_update(list(zip(ids, vecs)))
         total += len(ids)
         print(f"Progress: {total} vectors")
     print(f"Done. Total vectors written: {total}")
+    return total
 
 if __name__ == "__main__":
     main()

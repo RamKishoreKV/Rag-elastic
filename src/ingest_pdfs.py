@@ -88,11 +88,11 @@ def bulk_index(docs: List[Dict]) -> None:
         took = resp.get("took")
         print(f"Bulk index OK: {len(docs)} docs (took {took} ms)")
 
-def main():
+def main(return_count: bool = False) -> int:
     pdf_paths = sorted(glob.glob(os.path.join(DATA_DIR, "*.pdf")))
     if not pdf_paths:
         print(f"No PDFs found in {DATA_DIR}. Put files there and rerun.")
-        return
+        return 0
 
     total = 0
     for p in pdf_paths:
@@ -105,6 +105,7 @@ def main():
             bulk_index(docs[i:i+BATCH])
 
     print(f"Done. Total chunks indexed: {total}")
+    return total if return_count else 0
 
 if __name__ == "__main__":
     main()

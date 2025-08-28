@@ -1,11 +1,13 @@
+# Core
 fastapi
-uvicorn[standard]
-pydantic
-python-dotenv
-elasticsearch>=8.13.0
+uvicorn
+requests
+
+# Elastic + embeddings
 sentence-transformers
 pymupdf
-nltk
-tqdm
+# UI
 streamlit
-requests
+
+# Optional helpers
+python-dotenv
