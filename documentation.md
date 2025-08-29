@@ -330,12 +330,6 @@ Included tests:
 
 ---
 
-## 📑 License
-
-MIT (to be confirmed). If your org requires a different license, update here.
-
----
-
 ## 👤 Author
 
 **Ram Kishore KV**
@@ -345,3 +339,4 @@ MIT (to be confirmed). If your org requires a different license, update here.
 ## 📞 Support / Contact
 
 Open an issue on GitHub or reach out via the contact listed in the repo.
+
