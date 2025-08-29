@@ -33,7 +33,6 @@ def _is_idk_or_refusal(text: str) -> bool:
     )
 
 def _render_citations(citations):
-    # Citations are already deduped by API, but we also guard for duplicates here
     seen = set()
     lines = []
     for c in citations or []:
