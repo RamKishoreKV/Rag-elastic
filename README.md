@@ -1,3 +1,4 @@
+
 # RAG-Elastic MDP 🚀
 
 Simplified **Retrieval-Augmented Generation (RAG)** system built with **Elasticsearch + Open LLM** (via Ollama/HuggingFace).  
@@ -51,12 +52,27 @@ docker compose up -d
 ```
 
 ### 3. Run All-in-One
-This will: ensure deps → bring up ES → create index & ELSER → pull Ollama model → download Drive PDFs → ingest → embed → launch API+UI
+
+You can run the system in **two ways**:
+
+#### Option A: Pass Drive folder at startup (recommended)
+```bash
+python main.py "https://drive.google.com/drive/folders/<your-drive-folder-id>"
+```
+➡ This will: ensure deps → bring up ES → create index & ELSER → pull Ollama model → download Drive PDFs → ingest → embed → launch API+UI.
+
+#### Option B: Start system first, then ingest separately
 ```bash
 python main.py
 ```
+Then ingest manually:
+```bash
+curl -X POST "http://127.0.0.1:8000/ingest" `
+  -H "Content-Type: application/json" `
+  -d "{"folder_url": "https://drive.google.com/drive/folders/<your-drive-folder-id>"}"
+```
 
-You’ll see:
+When complete you’ll see:
 - API: http://127.0.0.1:8000/docs
 - Health: http://127.0.0.1:8000/healthz
 - UI: http://127.0.0.1:8501
@@ -101,7 +117,7 @@ rag-elastic-mdp/
 
 In your submission video (≤5 min), show:
 
-1. **Run `python main.py`**
+1. **Run `python main.py "<drive-folder-url>"`**
    - See ES + Ollama setup, Drive sync, ingest, embed
    - API + UI auto-launched
 
@@ -142,4 +158,4 @@ In your submission video (≤5 min), show:
 ---
 
 ## 👤 Author
-Ram Kishore KV 
+Ram Kishore KV
