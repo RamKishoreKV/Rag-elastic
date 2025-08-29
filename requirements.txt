@@ -11,3 +11,5 @@ streamlit
 
 # Optional helpers
 python-dotenv
+gdown
+python-dotenv
