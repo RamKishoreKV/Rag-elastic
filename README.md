@@ -3,7 +3,9 @@
 
 Simplified **Retrieval-Augmented Generation (RAG)** system built with **Elasticsearch + Open LLM** (via Ollama/HuggingFace).  
 
----
+## 🎥 Demo
+[![Demo Video](https://img.shields.io/badge/Demo-Video-green?logo=google-drive&logoColor=white)](https://drive.google.com/file/d/13FA1lljjs4p9g8G4r0N9I59sVVICxyCo/view?usp=drive_link)
+*(Click the badge above to watch the demo video on Google Drive)*
 
 ## 📌 Features
 
