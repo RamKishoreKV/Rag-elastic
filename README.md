@@ -116,9 +116,8 @@ rag-elastic-mdp/
 
 ---
 
-## 🎥 Demo Expectations
+## 🎥 Demo
 
-In your submission video (≤5 min), show:
 
 1. **Run `python main.py "<drive-folder-url>"`**
    - See ES + Ollama setup, Drive sync, ingest, embed
